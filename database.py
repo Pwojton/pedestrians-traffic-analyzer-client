@@ -16,7 +16,7 @@ def fetch_data_from_db():
     cur = conn.cursor()
     cur.execute(
         # f"SELECT * FROM pedestrians_track ORDER BY start_time ASC LIMIT 10"
-        f"SELECT * FROM pedestrians_track "
+        f"SELECT time_bucket('15 minutes', start_time) AS bucket_start_time,ped_id,spots,aliases FROM pedestrians_track;"
     )
     data = cur.fetchall()
     conn.commit()
