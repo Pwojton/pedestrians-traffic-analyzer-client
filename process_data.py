@@ -1,4 +1,6 @@
 import matplotlib.pyplot as plt
+
+
 def pre_process_data(data):
     processed_data = []
     aliased_pedestrians = []
@@ -69,3 +71,119 @@ def going_up_going_down(data):
     plt.show()
 
     return going_up, going_down
+
+
+def going_right_going_left(data):
+    time_counts = {}
+    left_counts = {}
+    right_counts = {}
+
+    for entry in data:
+        time_str, ped_id, spots = entry
+        time_obj = time_str
+        direction = "right" if (spots[-1] > 11 and spots[-1] % 2 == 0) else "left" if (
+                    spots[-1] > 11 and spots[-1] % 2 != 0) else "none"
+
+        time_counts[time_obj] = time_counts.get(time_obj, 0) + 1
+        if direction == "left":
+            left_counts[time_obj] = left_counts.get(time_obj, 0) + 1
+        elif direction == "right":
+            right_counts[time_obj] = right_counts.get(time_obj, 0) + 1
+
+    times = list(time_counts.keys())
+    left_ped_counts = [left_counts.get(time, 0) for time in times]
+    right_ped_counts = [right_counts.get(time, 0) for time in times]
+
+    fig, ax = plt.subplots()
+    bar_width = 0.3
+
+    indices = range(len(times))
+    up_x = [x - bar_width / 2 for x in indices]
+    down_x = [x + bar_width / 2 for x in indices]
+
+    ax.bar(up_x, left_ped_counts, width=bar_width, label='Pedestrians Going left', color='green', alpha=0.7)
+    ax.bar(down_x, right_ped_counts, width=bar_width, label='Pedestrians Going right', color='blue', alpha=0.7)
+
+    plt.xlabel('Time')
+    plt.ylabel('Number of Pedestrians')
+    plt.title('Pedestrian going up end direction 2023-11-16')
+    plt.xticks(indices, times, rotation=45, ha='right')
+    plt.legend()
+    plt.show()
+
+
+def going_up_start_destination(data):
+    time_counts = {}
+    left_counts = {}
+    right_counts = {}
+    center_counts = {}
+
+    for entry in data:
+        time_str, ped_id, spots = entry
+        time_obj = time_str
+        direction = "right" if (spots[0] == 4 or spots[0] == 5 or spots[0] == 7) else "left" if (
+                    spots[0] == 1 or spots[0] == 2 or spots[0] == 3) else "center" if spots[0] == 6 else "none"
+
+        time_counts[time_obj] = time_counts.get(time_obj, 0) + 1
+        if direction == "left":
+            left_counts[time_obj] = left_counts.get(time_obj, 0) + 1
+        elif direction == "right":
+            right_counts[time_obj] = right_counts.get(time_obj, 0) + 1
+        elif direction == "center":
+            center_counts[time_obj] = center_counts.get(time_obj, 0) + 1
+
+    times = list(time_counts.keys())
+    left_ped_counts = [left_counts.get(time, 0) for time in times]
+    right_ped_counts = [right_counts.get(time, 0) for time in times]
+    center_ped_counts = [center_counts.get(time, 0) for time in times]
+
+    fig, ax = plt.subplots()
+    bar_width = 0.2
+    bar_padding = 0.05
+
+    indices = range(len(times))
+    up_x = [x - bar_width - bar_padding / 2 for x in indices]
+    center_x = indices
+    down_x = [x + bar_width + bar_padding / 2 for x in indices]
+
+    ax.bar(up_x, left_ped_counts, width=bar_width, label='left', color='green', alpha=0.7)
+    ax.bar(center_x, center_ped_counts, width=bar_width, label='center', color='red', alpha=0.7)
+    ax.bar(down_x, right_ped_counts, width=bar_width, label='right', color='blue', alpha=0.7)
+
+    plt.xlabel('Time')
+    plt.ylabel('Number of Pedestrians')
+    plt.title('Pedestrian going up start direction 2023-11-16')
+    plt.xticks(indices, times, rotation=45, ha='right')
+    plt.legend()
+    plt.show()
+
+
+# TEST
+def plot_direction_histogram(data):
+    left_counts = 0
+    right_counts = 0
+
+    for entry in data:
+        time_str, ped_id, spots = entry
+
+        # Check if the condition for going right is met
+        if spots[-1] > 11 and spots[-1] % 2 == 0:
+            right_counts += 1
+
+        # Check if the condition for going left is met
+        elif spots[-1] > 11 and spots[-1] % 2 != 0:
+            left_counts += 1
+
+    # Plot the histogram
+    fig, ax = plt.subplots()
+    categories = ['Going Left', 'Going Right']
+    counts = [left_counts, right_counts]
+    colors = ['blue', 'green']
+
+    ax.bar(categories, counts, color=colors)
+    plt.xlabel('Direction')
+    plt.ylabel('Number of Pedestrians')
+    plt.title('Pedestrian Direction Histogram')
+
+    # Display the plot
+    plt.show()
