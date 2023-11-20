@@ -52,8 +52,8 @@ def going_up_going_down(data):
     up_ped_counts = [up_counts.get(time, 0) for time in times]
     down_ped_counts = [down_counts.get(time, 0) for time in times]
 
-    fig, ax = plt.subplots()
-    bar_width = 0.3
+    fig, ax = plt.subplots(figsize=(16, 6))
+    bar_width = 0.4
 
     indices = range(len(times))
     up_x = [x - bar_width / 2 for x in indices]
@@ -65,7 +65,7 @@ def going_up_going_down(data):
 
     plt.xlabel('Time')
     plt.ylabel('Number of Pedestrians')
-    plt.title('Pedestrian Traffic 2023-11-16')
+    plt.title('Pedestrian Traffic 2023-11-20')
     plt.xticks(indices, times, rotation=45, ha='right')  # Use the original times as x-axis labels
     plt.legend()
     plt.show()
@@ -73,7 +73,7 @@ def going_up_going_down(data):
     return going_up, going_down
 
 
-def going_right_going_left(data):
+def going_up_end_direction(data):
     time_counts = {}
     left_counts = {}
     right_counts = {}
@@ -82,7 +82,7 @@ def going_right_going_left(data):
         time_str, ped_id, spots = entry
         time_obj = time_str
         direction = "right" if (spots[-1] > 11 and spots[-1] % 2 == 0) else "left" if (
-                    spots[-1] > 11 and spots[-1] % 2 != 0) else "none"
+                spots[-1] > 11 and spots[-1] % 2 != 0) else "none"
 
         time_counts[time_obj] = time_counts.get(time_obj, 0) + 1
         if direction == "left":
@@ -94,8 +94,8 @@ def going_right_going_left(data):
     left_ped_counts = [left_counts.get(time, 0) for time in times]
     right_ped_counts = [right_counts.get(time, 0) for time in times]
 
-    fig, ax = plt.subplots()
-    bar_width = 0.3
+    fig, ax = plt.subplots(figsize=(16, 6))
+    bar_width = 0.4
 
     indices = range(len(times))
     up_x = [x - bar_width / 2 for x in indices]
@@ -104,9 +104,10 @@ def going_right_going_left(data):
     ax.bar(up_x, left_ped_counts, width=bar_width, label='Pedestrians Going left', color='green', alpha=0.7)
     ax.bar(down_x, right_ped_counts, width=bar_width, label='Pedestrians Going right', color='blue', alpha=0.7)
 
+    # plt.subplots(figsize=(12, 6))
     plt.xlabel('Time')
     plt.ylabel('Number of Pedestrians')
-    plt.title('Pedestrian going up end direction 2023-11-16')
+    plt.title('Pedestrian going up end direction 2023-11-20')
     plt.xticks(indices, times, rotation=45, ha='right')
     plt.legend()
     plt.show()
@@ -122,7 +123,7 @@ def going_up_start_destination(data):
         time_str, ped_id, spots = entry
         time_obj = time_str
         direction = "right" if (spots[0] == 4 or spots[0] == 5 or spots[0] == 7) else "left" if (
-                    spots[0] == 1 or spots[0] == 2 or spots[0] == 3) else "center" if spots[0] == 6 else "none"
+                spots[0] == 1 or spots[0] == 2 or spots[0] == 3) else "center" if spots[0] == 6 else "none"
 
         time_counts[time_obj] = time_counts.get(time_obj, 0) + 1
         if direction == "left":
@@ -137,22 +138,115 @@ def going_up_start_destination(data):
     right_ped_counts = [right_counts.get(time, 0) for time in times]
     center_ped_counts = [center_counts.get(time, 0) for time in times]
 
-    fig, ax = plt.subplots()
-    bar_width = 0.2
-    bar_padding = 0.05
-
+    fig, ax = plt.subplots(figsize=(18, 6))
+    bar_width = 0.4
     indices = range(len(times))
-    up_x = [x - bar_width - bar_padding / 2 for x in indices]
+    up_x = [x - bar_width / 2 for x in indices]
     center_x = indices
-    down_x = [x + bar_width + bar_padding / 2 for x in indices]
+    down_x = [x + bar_width / 2 for x in indices]
 
     ax.bar(up_x, left_ped_counts, width=bar_width, label='left', color='green', alpha=0.7)
     ax.bar(center_x, center_ped_counts, width=bar_width, label='center', color='red', alpha=0.7)
     ax.bar(down_x, right_ped_counts, width=bar_width, label='right', color='blue', alpha=0.7)
 
+    # plt.subplots(figsize=(12, 6))
     plt.xlabel('Time')
     plt.ylabel('Number of Pedestrians')
     plt.title('Pedestrian going up start direction 2023-11-16')
+    plt.xticks(indices, times, rotation=45, ha='right')
+    plt.legend()
+    plt.show()
+
+
+def going_down_destination(data):
+    time_counts = {}
+    left_counts = {}
+    right_counts = {}
+    center_counts = {}
+
+    for entry in data:
+        time_str, ped_id, spots = entry
+        time_obj = time_str
+        direction = "right" if (spots[-1] == 4 or spots[-1] == 5 or spots[-1] == 7) else "left" if (
+                spots[-1] == 1 or spots[-1] == 2 or spots[-1] == 3) else "center" if spots[-1] == 6 else "none"
+
+        time_counts[time_obj] = time_counts.get(time_obj, 0) + 1
+        if direction == "left":
+            left_counts[time_obj] = left_counts.get(time_obj, 0) + 1
+        elif direction == "right":
+            right_counts[time_obj] = right_counts.get(time_obj, 0) + 1
+        elif direction == "center":
+            center_counts[time_obj] = center_counts.get(time_obj, 0) + 1
+
+    times = list(time_counts.keys())
+    left_ped_counts = [left_counts.get(time, 0) for time in times]
+    right_ped_counts = [right_counts.get(time, 0) for time in times]
+    center_ped_counts = [center_counts.get(time, 0) for time in times]
+
+    fig, ax = plt.subplots(figsize=(18, 6))
+    bar_width = 0.4
+
+    indices = range(len(times))
+    up_x = [x - bar_width / 2 for x in indices]
+    center_x = indices
+    down_x = [x + bar_width / 2 for x in indices]
+
+    ax.bar(up_x, left_ped_counts, width=bar_width, label='left', color='green', alpha=0.7)
+    ax.bar(center_x, center_ped_counts, width=bar_width, label='center', color='red', alpha=0.7)
+    ax.bar(down_x, right_ped_counts, width=bar_width, label='right', color='blue', alpha=0.7)
+
+    # plt.subplots(figsize=(12, 6))
+    plt.xlabel('Time')
+    plt.ylabel('Number of Pedestrians')
+    plt.title('Pedestrian going down destination 2023-11-16')
+    plt.xticks(indices, times, rotation=45, ha='right')
+    plt.legend()
+    plt.show()
+
+
+def going_down_start_direction(data):
+    time_counts = {}
+    left_counts = {}
+    right_counts = {}
+    # none_counts = {}
+
+    for entry in data:
+        time_str, ped_id, spots = entry
+        time_obj = time_str
+        direction = "right" if (spots[0] > 11 and spots[0] % 2 == 0) else "left" if (
+                spots[0] > 11 and spots[0] % 2 != 0) else "none"
+
+        time_counts[time_obj] = time_counts.get(time_obj, 0) + 1
+        if direction == "left":
+            left_counts[time_obj] = left_counts.get(time_obj, 0) + 1
+        elif direction == "right":
+            right_counts[time_obj] = right_counts.get(time_obj, 0) + 1
+        # elif direction == "none":
+            # none_counts[time_obj] = none_counts.get(time_obj, 0) + 1
+
+    times = list(time_counts.keys())
+
+    fig, ax = plt.subplots(figsize=(16, 6))
+    bar_width = 0.4
+
+    indices = range(len(times))
+    up_x = [x - bar_width / 2 for x in indices]
+    # none_x = indices
+    down_x = [x + bar_width / 2 for x in indices]
+
+    # Use the same set of times for getting counts
+    left_ped_counts = [left_counts.get(time, 0) for time in times]
+    # none_ped_counts = [none_counts.get(time, 0) for time in times]
+    right_ped_counts = [right_counts.get(time, 0) for time in times]
+
+    ax.bar(up_x, left_ped_counts, width=bar_width, label='left', color='green', alpha=0.7)
+    # ax.bar(none_x, none_ped_counts, width=bar_width, label='not specified', color='red', alpha=0.7)
+    ax.bar(down_x, right_ped_counts, width=bar_width, label='right', color='blue', alpha=0.7)
+
+    # plt.subplots(figsize=(12, 6))
+    plt.xlabel('Time')
+    plt.ylabel('Number of Pedestrians')
+    plt.title('Pedestrian going down start direction 2023-11-16')
     plt.xticks(indices, times, rotation=45, ha='right')
     plt.legend()
     plt.show()
