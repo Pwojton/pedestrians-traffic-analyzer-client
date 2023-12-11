@@ -1,3 +1,4 @@
+import os
 from database import fetch_data_from_db
 from process_data import pre_process_data, going_up_going_down, going_up_end_direction, plot_direction_histogram, \
     going_up_start_destination, going_down_destination, going_down_start_direction

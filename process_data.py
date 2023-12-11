@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 
+DATE = ' - Friday'
 
 def pre_process_data(data):
     processed_data = []
@@ -8,13 +9,16 @@ def pre_process_data(data):
     for row in data:
         time, ped_id, spots, aliases = row[:5]
 
-        if aliases[0] == 0:
+        if aliases[0] == 0 and len(spots) > 1:
+            processed_data.append((time, ped_id, spots))
             continue
         if spots[0] == 0 and len(spots):
             continue
 
         for alias in aliases:
             matching_pedestrian = next((p for p in data if p[1] == alias), None)
+            if not matching_pedestrian:
+                continue
             aliased_pedestrians.append(matching_pedestrian[1])
             if matching_pedestrian:
                 spots += [spot for spot in matching_pedestrian[2] if spot not in spots]
@@ -46,9 +50,9 @@ def going_up_going_down(data):
             down_counts[time_obj] = down_counts.get(time_obj, 0) + 1
             going_down.append(entry)
 
-    # Convert the data for plotting
+
+
     times = list(time_counts.keys())
-    # ped_counts = list(time_counts.values())
     up_ped_counts = [up_counts.get(time, 0) for time in times]
     down_ped_counts = [down_counts.get(time, 0) for time in times]
 
@@ -59,16 +63,17 @@ def going_up_going_down(data):
     up_x = [x - bar_width / 2 for x in indices]
     down_x = [x + bar_width / 2 for x in indices]
 
-    # ax.bar(indices, ped_counts, width=bar_width, label='Total Pedestrians', align='center')
-    ax.bar(up_x, up_ped_counts, width=bar_width, label='Pedestrians Going Up', color='green', alpha=0.7)
+    ax.bar(up_x, up_ped_counts, width=bar_width, label='Pedestrians Going Up', color='orange', alpha=0.7)
     ax.bar(down_x, down_ped_counts, width=bar_width, label='Pedestrians Going Down', color='blue', alpha=0.7)
 
     plt.xlabel('Time')
     plt.ylabel('Number of Pedestrians')
-    plt.title('Pedestrian Traffic 2023-11-20')
-    plt.xticks(indices, times, rotation=45, ha='right')  # Use the original times as x-axis labels
+    plt.title('Pedestrian Traffic' + DATE)
+    plt.xticks(indices, times, rotation=45, ha='right')
     plt.legend()
     plt.show()
+    print("LEn")
+    print(len(going_up) + len(going_down))
 
     return going_up, going_down
 
@@ -107,7 +112,7 @@ def going_up_end_direction(data):
     # plt.subplots(figsize=(12, 6))
     plt.xlabel('Time')
     plt.ylabel('Number of Pedestrians')
-    plt.title('Pedestrian going up end direction 2023-11-20')
+    plt.title('Pedestrian going up end direction' + DATE)
     plt.xticks(indices, times, rotation=45, ha='right')
     plt.legend()
     plt.show()
@@ -152,7 +157,7 @@ def going_up_start_destination(data):
     # plt.subplots(figsize=(12, 6))
     plt.xlabel('Time')
     plt.ylabel('Number of Pedestrians')
-    plt.title('Pedestrian going up start direction 2023-11-16')
+    plt.title('Pedestrian going up start direction' + DATE)
     plt.xticks(indices, times, rotation=45, ha='right')
     plt.legend()
     plt.show()
@@ -198,7 +203,7 @@ def going_down_destination(data):
     # plt.subplots(figsize=(12, 6))
     plt.xlabel('Time')
     plt.ylabel('Number of Pedestrians')
-    plt.title('Pedestrian going down destination 2023-11-16')
+    plt.title('Pedestrian going down destination' + DATE)
     plt.xticks(indices, times, rotation=45, ha='right')
     plt.legend()
     plt.show()
@@ -246,7 +251,7 @@ def going_down_start_direction(data):
     # plt.subplots(figsize=(12, 6))
     plt.xlabel('Time')
     plt.ylabel('Number of Pedestrians')
-    plt.title('Pedestrian going down start direction 2023-11-16')
+    plt.title('Pedestrian going down start direction' + DATE)
     plt.xticks(indices, times, rotation=45, ha='right')
     plt.legend()
     plt.show()
